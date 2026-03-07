@@ -1,0 +1,22 @@
+{
+  "name": "chit-chat-full-stack",
+  "version": "1.0.0",
+  "description": "react js, node js",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm install --prefix frontend && npm install --prefix backend && npm run build --prefix frontend",
+    "start": "npm run start --prefix backend"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nitishkumar-TechM/chit-chat-full-stack.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/nitishkumar-TechM/chit-chat-full-stack/issues"
+  },
+  "homepage": "https://github.com/nitishkumar-TechM/chit-chat-full-stack#readme"
+}
