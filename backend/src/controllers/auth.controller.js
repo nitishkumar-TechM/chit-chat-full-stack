@@ -151,7 +151,7 @@ export const updateProfile = async (req, res) => {
             height: 500,
         });
 
-        const updatedUser = await User.findByIdAndUpdate(userId, { profilePic: uploadResponse.secure_url }, { new: true });
+        const updatedUser = await User.findByIdAndUpdate(userId, { profilePic: uploadResponse.secure_url }, { new: true }).select("-password"); // Exclude password from the returned user data
         if (!updatedUser) {
             return res.status(404).json({ message: "User not found" });
         }
