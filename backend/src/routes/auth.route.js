@@ -1,8 +1,11 @@
 import express from "express";
 import { signup, login, logout, updateProfile } from "../controllers/auth.controller.js";
 import { protectRoute } from "../middleware/auth.middleware.js";
+import arcjetMiddleware from "../middleware/arcjet.middleware.js";
 
 const router = express.Router();
+
+router.use(arcjetMiddleware); // Apply Arcjet middleware to all auth routes
 
 router.post("/signup", signup);
 
