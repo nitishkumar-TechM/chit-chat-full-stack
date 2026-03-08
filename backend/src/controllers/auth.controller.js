@@ -77,3 +77,45 @@ export const signup = async (req, res) => {
     }
     
 };
+
+export const login = async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        if (!email || !password) {
+            return res.status(400).json({ message: "Email and password are required" });
+        }
+
+        const user = await User.findOne({ email }); // Replace with actual database query
+        if (!user) {
+            return res.status(400).json({ message: "Invalid email or password" });
+            // Note: Never reveal whether the email or password was incorrect to avoid giving hints to attackers
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: "Invalid email or password" });
+        }
+
+        generateToken(user._id, res); // You would implement this function to generate a JWT token for the user
+
+        res.status(200).json({ 
+            message: "Login successful",
+            data: {
+                _id: user._id,
+                fullname: user.fullname,
+                email: user.email,
+                profilePic: user.profilePic,
+            }            
+        });
+
+    } catch (error) {
+        console.error("Error during login controller:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+export const logout = (_, res) => {
+    res.cookie("token", "", {maxAge:0});
+    res.status(200).json({ message: "Logout successful" });
+};
