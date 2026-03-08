@@ -38,8 +38,14 @@ export const signup = async (req, res) => {
         const passwordHash = await bcrypt.hash(password, salt);
         const newUser = new User({ fullname, email, password: passwordHash });
         if (newUser) {
-            generateToken(newUser._id, res); // You would implement this function to generate a JWT token for the user
-            await newUser.save();
+            //before CR:(code review)
+            // generateToken(newUser._id, res); // You would implement this function to generate a JWT token for the user
+            // await newUser.save();
+
+            // after CR:
+            // Persist user first, then issue auth cookie
+            const savedUser = await newUser.save();
+            generateToken(savedUser._id, res);
 
             // Simulate successful user creation
             res.status(201).json({ message: "User registered successfully" });
