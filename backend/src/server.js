@@ -7,8 +7,6 @@ import cookieParser from "cookie-parser";
 // import cors from "cors";
 import { ENV } from "./lib/env.js";
 
-dotenv.config();
-
 const app = express();
 // app.use(cors({
 //     origin: true, // Allow all origins (you can specify your frontend URL here in production)

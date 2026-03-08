@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { generateToken } from "../lib/util.js";
 import { ENV } from "../lib/env.js";
 import { sendWelcomeEmail } from "../emails/emailHandler.js";
+import cloudinary from "../lib/cloudinary.js";
 
 export const signup = async (req, res) => {
     // console.log("Signup controller called with data:", req.body); // Debug log to check incoming data
@@ -118,4 +119,46 @@ export const login = async (req, res) => {
 export const logout = (_, res) => {
     res.cookie("token", "", {maxAge:0});
     res.status(200).json({ message: "Logout successful" });
+};
+
+// Update user profile picture
+export const updateProfile = async (req, res) => {
+    try {
+        const { profilePic } = req.body;
+        if (!profilePic) {
+            return res.status(400).json({ message: "Profile picture URL is required" });
+        }
+
+        const userId = req.user._id; // Assuming you have middleware to set req.user based on the auth token
+
+        const uploadResponse = await cloudinary.uploader.upload(profilePic, {
+            public_id: `profile_${userId}`,
+        });
+
+        // Optimize delivery by resizing and applying auto-format and auto-quality
+        const optimizeUrl = cloudinary.url(`profile_${userId}`, {
+            fetch_format: 'auto',
+            quality: 'auto'
+        });
+
+        console.log(optimizeUrl);
+
+        // Transform the image: auto-crop to square aspect_ratio
+        const autoCropUrl = cloudinary.url(`profile_${userId}`, {
+            crop: 'auto',
+            gravity: 'auto',
+            width: 500,
+            height: 500,
+        });
+
+        const updatedUser = await User.findByIdAndUpdate(userId, { profilePic: uploadResponse.secure_url }, { new: true });
+        if (!updatedUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        res.status(200).json({ message: "Profile picture updated successfully", data: updatedUser });
+    } catch (error) {
+        console.error("Error updating profile picture:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+
 };
