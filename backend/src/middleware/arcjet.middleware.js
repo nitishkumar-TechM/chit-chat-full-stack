@@ -12,12 +12,14 @@ const arcjetMiddleware = async (req, res, next) => {
                 res.writeHead(429, { "Content-Type": "application/json" });
                 res.end(JSON.stringify({ error: "Too Many Requests" }));
                 return;
-            } else if (decision.reason.isBot()) {
-                res.writeHead(403, { "Content-Type": "application/json" });
-                res.end(JSON.stringify({ error: "No bots allowed" }));
-                return;
-            } else{
-                return res.status(403).json({ message: "Access denied by security policy" });
+                // commenting the below lines because we are unable to test in postman and it is blocking all the requests, even the valid ones. We can test this functionality in production and enable it back.
+            // } else if (decision.reason.isBot()) {
+            //     res.writeHead(403, { "Content-Type": "application/json" });
+            //     res.end(JSON.stringify({ error: "No bots allowed" }));
+            //     return;
+            // } 
+            // else{
+            //     return res.status(403).json({ message: "Access denied by security policy" });
             }
         } 
         
